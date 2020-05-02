@@ -1,0 +1,12 @@
+.timer {
+    height: 100vh;
+    min-height: -webkit-fill-available;
+}
+
+.timer__title {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.timer__countdown {
+  font-weight: bold;
+}

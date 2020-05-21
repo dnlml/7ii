@@ -10,7 +10,7 @@ export const Timer = ({ data }) => {
   const [{hours: h, minutes: m, seconds: s}, setTime] = useState(currentData);
   const [title, setTitle] = useState(currentData.title);
 
-  const dataLength = data.length;
+  const dataIndex = data.length - 1;
   let status = isRunning ? 'Running...' : 'Paused';
   let audio = new Audio('https://api.coderrocketfuel.com/assets/pomodoro-times-up.mp3');
 
@@ -21,19 +21,29 @@ export const Timer = ({ data }) => {
   }, []);
 
   useInterval(() => {
-    setCountdown(countdown - 1);
-    setTime(convertToReadableTime(countdown));
+    const newCountdown = countdown - 1;
+    setCountdown(newCountdown);
+    setTime(convertToReadableTime(newCountdown));
 
-    if(countdown === 0) {
+    if (newCountdown === 0) {
       // audio.play();
-      if (currentTimerIndex < dataLength) {
+      if (currentTimerIndex <= dataIndex) {
         const newIndex = currentTimerIndex + 1;
+        const nextCountdown = data[newIndex];
+
         setcurrentTimerIndex(newIndex);
-        setTitle(data[newIndex].title);
-        setCountdown(convertToSeconds(data[newIndex]));
+
+        if (nextCountdown) {
+          setTitle(nextCountdown.title);
+          setCountdown(convertToSeconds(nextCountdown));
+        } else {
+          setTitle('FINISHED');
+          setTime(convertToReadableTime('', true));
+          setRunning(false);
+        }
       }
     }
-  }, (isRunning && (currentTimerIndex < dataLength) ) ? 1000 : null);
+  }, (isRunning && (currentTimerIndex <= dataIndex) ) ? 1000 : null);
 
   const onKeyDown = () => {
     setRunning(!isRunning);
@@ -46,11 +56,23 @@ export const Timer = ({ data }) => {
         onKeyEvent={onKeyDown}
       />
       <h2 className='timer__title'>{title}</h2>
-      <p className='timer__countdown'>{h}:{m}:{s} </p>
-      <p className='timer__status'>{status}</p>
+      <p className='timer__countdown'>
+        {composeTime({ h, m, s })}
+      </p>
+      <p className='timer__status'>{(currentTimerIndex <= dataIndex) && status}</p>
     </div>
   )
-}
+};
+
+const composeTime = ({ h, m, s }) => {
+  let output = '';
+
+  if ( h && m && s) {
+    output = `${h}:${m}:${s}`;
+  }
+
+  return output;
+};
 
 const useInterval = (callback, delay) => {
   const savedCallback = useRef();
@@ -67,14 +89,14 @@ const useInterval = (callback, delay) => {
       let id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
-  }, [delay]);
+  });
 };
 
 const convertToSeconds = ({ hours, minutes, seconds }) => {
   return (hours * 3600) + (minutes * 60) + seconds;
 }
 
-const convertToReadableTime = (time = 0) => {
+const convertToReadableTime = (time = 0, empty = false) => {
   const { floor } = Math;
 
   let seconds = floor((time) % 60);
@@ -84,6 +106,12 @@ const convertToReadableTime = (time = 0) => {
   seconds = seconds < 10 ? `0${seconds}` : seconds;
   minutes = minutes < 10 ? `0${minutes}` : minutes;
   hours = hours < 10 ? `0${hours}` : hours;
+
+  if (empty) {
+    hours = false;
+    minutes = false;
+    seconds = false;
+  }
 
   return {
     hours,

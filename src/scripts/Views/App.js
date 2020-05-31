@@ -1,11 +1,15 @@
 import React from "react";
-import { Timer } from "../components/timer";
+import { Timer } from "../components/timer/timer";
+import { ListItem } from "../components/listitem/listitem";
 import { mock } from "../mock/index";
 
 export const App = () => {
   return (
-    <Timer
-      data={mock}
-    />
+    <>
+      <ListItem />
+      <Timer
+        data={mock}
+      />
+    </>
   );
 }

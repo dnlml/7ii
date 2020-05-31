@@ -26,7 +26,7 @@ export const Timer = ({ data }) => {
     setTime(convertToReadableTime(newCountdown));
 
     if (newCountdown === 0) {
-      // audio.play();
+      audio.play();
       if (currentTimerIndex <= dataIndex) {
         const newIndex = currentTimerIndex + 1;
         const nextCountdown = data[newIndex];

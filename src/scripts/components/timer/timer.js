@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import fitty from "fitty";
 import KeyboardEventHandler from 'react-keyboard-event-handler';
+import { convertToSeconds } from '../../utils/convertToSeconds';
 
 export const Timer = ({ data }) => {
   const [currentTimerIndex, setcurrentTimerIndex] = useState(0);
@@ -91,10 +92,6 @@ const useInterval = (callback, delay) => {
     }
   });
 };
-
-const convertToSeconds = ({ hours, minutes, seconds }) => {
-  return (hours * 3600) + (minutes * 60) + seconds;
-}
 
 const convertToReadableTime = (time = 0, empty = false) => {
   const { floor } = Math;

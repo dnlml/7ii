@@ -29,6 +29,13 @@ export const TimerList = () => {
     }
   };
 
+  const onChangeHandler = (e, id) =>{
+    const { value, id: type } = e.target;
+    const currentTimer = timers.filter((item) => item.id === id)[0];
+    const mutatingValue = type !== 'title' ? parseInt(value, 10) : value;
+    currentTimer[type] = mutatingValue;
+  };
+
   console.log(timers);
   return (
     <ul>
@@ -38,6 +45,9 @@ export const TimerList = () => {
         return (
           <TimerItem
             onSubmitFn={onSubmitHandler}
+            onChangeFn={(e) => {
+              onChangeHandler(e, id);
+            }}
             key={id}
             title={title}
             hours={hours}

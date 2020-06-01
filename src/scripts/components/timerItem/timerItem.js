@@ -1,9 +1,9 @@
 import React from 'react';
 
-export const TimerItem = ({ title, hours, minutes, seconds, onSubmitFn}) => {
+export const TimerItem = ({ title, hours, minutes, seconds, onSubmitFn, onChangeFn}) => {
   return (
     <li>
-      <form onSubmit={onSubmitFn}>
+      <form onSubmit={onSubmitFn} onChange={onChangeFn}>
         <label htmlFor="title">Title</label>
         <input type="text" name="title" id="title" defaultValue={title} />
         <br />
